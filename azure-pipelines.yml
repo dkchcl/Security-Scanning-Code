@@ -59,7 +59,7 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             
   - stage: SecurityScan
-    displayName: Terraform Security Scanning
+    displayName: Security Scanning
     dependsOn: PreCommit
     jobs:
     - job: SecurityScan
