@@ -79,23 +79,23 @@ stages:
             tflint
           workingDirectory: '$(System.DefaultWorkingDirectory)'
     
-  # - stage: InfraCostStage
-  #   displayName: Infra Cost & Impact Assessment Stage
-  #   dependsOn: SecurityScan
-  #   jobs:
-  #     - job: InfraCost
-  #       displayName: Infra Cost
-  #       steps:
-  #       - task: PowerShell@2
-  #         displayName: Infra Cost
-  #         inputs:
-  #           targetType: 'inline'
-  #           script: 'infracost breakdown --path=.'
-  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+  - stage: InfraCostStage
+    displayName: Infra Cost & Impact Assessment Stage
+    dependsOn: SecurityScan
+    jobs:
+      - job: InfraCost
+        displayName: Infra Cost
+        steps:
+        - task: PowerShell@2
+          displayName: Infra Cost
+          inputs:
+            targetType: 'inline'
+            script: 'infracost breakdown --path=.'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
 
   - stage: PlanStage
     displayName: Plan & Review Stage
-    # dependsOn: InfraCostStage
+    dependsOn: InfraCostStage
     jobs:
       - job: TerraformPlan
         displayName: Terraform Plan
@@ -111,30 +111,13 @@ stages:
             backendAzureRmStorageAccountName: 'dkcstatestg1234'
             backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
-        # - task: TerraformTask@5
-        #   displayName: Terraform Plan
-        #   inputs:
-        #     provider: 'azurerm'
-        #     command: 'plan'
-        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-        #     environmentServiceNameAzureRM: 'infra-sc'
-        - task: PowerShell@2
+        - task: TerraformTask@5
           displayName: Terraform Plan
           inputs:
-            targetType: inline
-            workingDirectory: $(Build.SourcesDirectory)
-            script: |
-              terraform init
-              terraform plan -out=tfplan -var-file=terraform.tfvars
-        - task: PowerShell@2
-          displayName: Infracost Breakdown
-          inputs:
-            targetType: inline
-            workingDirectory: $(Build.SourcesDirectory)
-            script: |
-              infracost breakdown \
-                --terraform-plan tfplan \
-                --format table
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            environmentServiceNameAzureRM: 'infra-sc'
 
   - stage: ApprovalStage
     displayName: Approval & Governance Stage
