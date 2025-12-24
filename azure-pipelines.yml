@@ -8,7 +8,7 @@ stages:
     displayName: Pre-Commit / Static Analysis Stage
     jobs:
       - job: Terraform_install_init
-        displayName: Terraform install init
+        displayName: Terraform install & init
         steps:
           - task: TerraformInstaller@1
             displayName: Terraform install
@@ -27,7 +27,7 @@ stages:
               backendAzureRmKey: 'dev.tfstate'
 
       - job: Terraform_fmt_Validate
-        displayName: Terraform fmt Validate
+        displayName: Terraform fmt & Validate
         dependsOn: Terraform_install_init
         steps:
         - task: TerraformTask@5
@@ -55,28 +55,31 @@ stages:
             provider: 'azurerm'
             command: 'validate'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-
-      - job: Security_Scanning
-        displayName: Code Scanning
-        steps:
-        - task: tfsec@1
-          displayName: TFSec
-          inputs:
-            version: 'v1.26.0'
-            dir: '$(System.DefaultWorkingDirectory)'
-
-        - task: PowerShell@2
-          displayName: TFLint
-          inputs:
-            targetType: 'inline'
-            script: |
-              tflint --init
-              tflint
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            
+  - stage: SecurityScan
+    displayName: Terraform Security Scanning
+    dependsOn: PreCommit
+    jobs:
+    - job: SecurityScan
+      displayName: Terraform Security Scanning
+      steps:
+      - task: tfsec@1
+        displayName: TFSec
+        inputs:
+          version: 'v1.26.0'
+          dir: '$(System.DefaultWorkingDirectory)'
+      - task: PowerShell@2
+        displayName: TFLint
+        inputs:
+          targetType: 'inline'
+          script: |
+            tflint --init
+            tflint
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
     
-
-  - stage: CostStage
-    displayName: Cost & Impact Assessment Stage
+  - stage: InfraCostStage
+    displayName: Infra Cost & Impact Assessment Stage
+    dependsOn: SecurityScan
     jobs:
       - job: InfraCost
         displayName: Infra Cost
@@ -89,7 +92,8 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
 
   - stage: PlanStage
-    displayName: Plan Stage
+    displayName: Plan & Review Stage
+    dependsOn: InfraCostStage
     jobs:
       - job: TerraformPlan
         displayName: Terraform Plan
@@ -113,8 +117,9 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             environmentServiceNameAzureRM: 'infra-sc'
 
-  - stage: MannualApprovalStage
-    displayName: Mannual Approval Stage
+  - stage: ApprovalStage
+    displayName: Approval & Governance Stage
+    dependsOn: PlanStage
     pool: server
     jobs:
       - job: MannualApproval
@@ -127,7 +132,8 @@ stages:
             approvers: 'dkc.hcl@gmail.com'
 
   - stage: ApplyStage 
-    displayName: Apply Stage
+    displayName: Deploy / Apply Stage
+    dependsOn: ApprovalStage
     jobs:
       - job: TerraformApply
         displayName: Terraform Apply
