@@ -89,12 +89,11 @@ stages:
         - task: PowerShell@2
           displayName: Infra Cost
           inputs:
-            targetType: 'inline'
+            targetType: inline
             script: |
               infracost breakdown --path=.
-              env:         
-                infracost-api: $(infracost-api)
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+          env:
+            INFRACOST_API_KEY: $(INFRACOST_API_KEY)
 
   - stage: PlanStage
     displayName: Plan & Review Stage
