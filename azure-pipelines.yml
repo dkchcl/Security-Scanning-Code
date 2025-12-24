@@ -100,17 +100,17 @@ stages:
       - job: TerraformPlan
         displayName: Terraform Plan
         steps:
-        # - task: TerraformTask@5
-        #   displayName: Terraform init
-        #   inputs:
-        #     provider: 'azurerm'
-        #     command: 'init'
-        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-        #     backendServiceArm: 'infra-sc'
-        #     backendAzureRmResourceGroupName: 'dkc-state-rg'
-        #     backendAzureRmStorageAccountName: 'dkcstatestg1234'
-        #     backendAzureRmContainerName: 'statefiles'
-        #     backendAzureRmKey: 'dev.tfstate'
+        - task: TerraformTask@5
+          displayName: Terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            backendServiceArm: 'infra-sc'
+            backendAzureRmResourceGroupName: 'dkc-state-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg1234'
+            backendAzureRmContainerName: 'statefiles'
+            backendAzureRmKey: 'dev.tfstate'
         # - task: TerraformTask@5
         #   displayName: Terraform Plan
         #   inputs:
