@@ -88,7 +88,10 @@ stages:
           displayName: Infra Cost
           inputs:
             targetType: 'inline'
-            script: 'infracost breakdown --path=.'
+            script: |
+              infracost breakdown --path=.
+              env:         
+                infracost-api: $(infracost-api)
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
 
   - stage: PlanStage
