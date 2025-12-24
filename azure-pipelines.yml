@@ -1,9 +1,9 @@
 trigger: none
   # - main
 
-pool: New_agent
-variables:
-- name: New variable group 24-Dec
+pool: Agent_01_Dec2025
+# variables:
+# - name: New variable group 24-Dec
 
 stages:
   - stage: PreCommit
@@ -87,13 +87,10 @@ stages:
         displayName: Infra Cost
         steps:
         - task: PowerShell@2
-          displayName: Infra Cost
           inputs:
-            targetType: inline
-            script: |
-              infracost breakdown --path=.
-          env:
-            INFRACOST_API_KEY: $(INFRACOST_API_KEY)
+            targetType: 'inline'
+            script: 'infracost breakdown --path=.'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
 
   - stage: PlanStage
     displayName: Plan & Review Stage
