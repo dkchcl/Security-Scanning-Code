@@ -78,6 +78,11 @@ stages:
             tflint --init
             tflint
           workingDirectory: '$(System.DefaultWorkingDirectory)'
+      - task: trivy@2
+        inputs:
+          version: 'latest'
+          type: 'repository'
+          target: '$(System.DefaultWorkingDirectory)'
     
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
