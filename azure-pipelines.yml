@@ -2,6 +2,8 @@ trigger: none
   # - main
 
 pool: New_agent
+variables:
+- name: New variable group 24-Dec
 
 stages:
   - stage: PreCommit
