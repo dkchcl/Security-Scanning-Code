@@ -1,11 +1,11 @@
-trigger: 
-  - main
+trigger: none
+  # - main
 
 pool: New_agent
 
 stages:
-  - stage: Install_fmt_init_Validate_Stage
-    displayName: Install_fmt_init_Validate Stage
+  - stage: PreCommit
+    displayName: Pre-Commit / Static Analysis Stage
     jobs:
       - job: Terraform_install_init
         displayName: Terraform install init
@@ -56,10 +56,7 @@ stages:
             command: 'validate'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
 
-  - stage: Scanning_Stage
-    displayName: Scanning Stage
-    jobs:
-      - job: Code_Scanning
+      - job: Security_Scanning
         displayName: Code Scanning
         steps:
         - task: tfsec@1
@@ -69,7 +66,7 @@ stages:
             dir: '$(System.DefaultWorkingDirectory)'
 
         - task: PowerShell@2
-          displayName: 'Run TFLint'
+          displayName: TFLint
           inputs:
             targetType: 'inline'
             script: |
@@ -77,6 +74,19 @@ stages:
               tflint
             workingDirectory: '$(System.DefaultWorkingDirectory)'
     
+
+  - stage: CostStage
+    displayName: Cost & Impact Assessment Stage
+    jobs:
+      - job: InfraCost
+        displayName: Infra Cost
+        steps:
+        - task: PowerShell@2
+          displayName: Infra Cost
+          inputs:
+            targetType: 'inline'
+            script: 'infracost breakdown --path=.'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
 
   - stage: PlanStage
     displayName: Plan Stage
