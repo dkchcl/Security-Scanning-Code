@@ -3,7 +3,7 @@ trigger:
 
 pool: Agent_01_Dec2025
 variables:
-- name: INFRACOST_API_KEY
+- group: INFRACOST_API_KEY
 
 stages:
   - stage: PreCommit
