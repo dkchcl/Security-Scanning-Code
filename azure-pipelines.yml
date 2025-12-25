@@ -116,15 +116,8 @@ stages:
             provider: 'azurerm'
             command: 'plan'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            commandOptions: '-out=tfplan'
             environmentServiceNameAzureRM: 'infra-sc'
-        - task: PowerShell@2
-          displayName: Terraform Plan
-          inputs:
-            targetType: 'inline'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            script: |
-              terraform init
-              terraform plan -out=tfplan
     
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
