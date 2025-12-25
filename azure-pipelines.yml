@@ -90,6 +90,19 @@ stages:
       #     type: 'repository'
       #     target: '$(System.DefaultWorkingDirectory)'
     
+  # - stage: InfraCostStage
+  #   displayName: Infra Cost & Impact Assessment Stage
+  #   dependsOn: SecurityScan
+  #   jobs:
+  #     - job: InfraCost
+  #       displayName: Infra Cost
+  #       steps:
+  #       - task: PowerShell@2
+  #         displayName: Infra Cost
+  #         inputs:
+  #           targetType: 'inline'
+  #           script: 'infracost breakdown --path=.'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
     dependsOn: SecurityScan
@@ -97,12 +110,35 @@ stages:
       - job: InfraCost
         displayName: Infra Cost
         steps:
+        # Install Infracost
         - task: PowerShell@2
-          displayName: Infra Cost
+          displayName: Install Infracost
           inputs:
             targetType: 'inline'
-            script: 'infracost breakdown --path=.'
+            script: |
+              curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.ps1 | powershell -Command -
+
+        # Terraform init
+        - task: TerraformTask@5
+          displayName: Terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            backendServiceArm: 'infra-sc'
+            backendAzureRmResourceGroupName: 'dkc-state-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg1234'
+            backendAzureRmContainerName: 'statefiles'
+            backendAzureRmKey: 'dev.tfstate'
+
+      # Infracost breakdown
+        - task: PowerShell@2
+          displayName: Infra Cost Breakdown
+          inputs:
+            targetType: 'inline'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            script: |
+              infracost breakdown --path=. --format table
 
   - stage: PlanStage
     displayName: Plan & Review Stage
