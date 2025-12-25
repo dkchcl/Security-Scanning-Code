@@ -117,7 +117,15 @@ stages:
             command: 'plan'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             environmentServiceNameAzureRM: 'infra-sc'
-
+        - task: PowerShell@2
+          displayName: Terraform Plan
+          inputs:
+            targetType: 'inline'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            script: |
+              terraform init
+              terraform plan -out=tfplan
+    
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
     dependsOn: PlanStage
@@ -145,7 +153,7 @@ stages:
           inputs:
             targetType: 'inline'
             script: |
-              infracost breakdown --path=. --format table
+              infracost breakdown --path=tfplan --format table
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
           env:
             INFRACOST_API_KEY: $(INFRACOST_API_KEY)  
