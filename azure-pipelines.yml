@@ -78,17 +78,17 @@ stages:
             tflint --init
             tflint
           workingDirectory: '$(System.DefaultWorkingDirectory)'
-      - task: PowerShell@2
-        displayName: Trivy
-        inputs:
-          targetType: 'inline'
-          script: 'trivy fs .'
-          workingDirectory: '$(System.DefaultWorkingDirectory)'
-      # - task: trivy@2
+      # - task: PowerShell@2
+      #   displayName: Trivy
       #   inputs:
-      #     version: 'latest'
-      #     type: 'repository'
-      #     target: '$(System.DefaultWorkingDirectory)'
+      #     targetType: 'inline'
+      #     script: 'trivy fs .'
+      #     workingDirectory: '$(System.DefaultWorkingDirectory)'
+      - task: trivy@2
+        inputs:
+          version: 'latest'
+          type: 'repository'
+          target: '$(System.DefaultWorkingDirectory)'
     
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
