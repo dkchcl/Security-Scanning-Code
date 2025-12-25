@@ -172,12 +172,9 @@ stages:
           displayName: Infra Cost
           inputs:
             targetType: 'inline'
-            script: |
-              infracost breakdown `
-                --path=tfplan.json `
-                --terraform-plan-flags="-input=false" `
-                --format table
             workingDirectory: '$(Pipeline.Workspace)/tfplan'
+            script: |
+              infracost diff --path=tfplan.json --format table
           env:
             INFRACOST_API_KEY: $(INFRACOST_API_KEY)  
 
