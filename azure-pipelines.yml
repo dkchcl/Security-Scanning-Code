@@ -137,17 +137,17 @@ stages:
         #       Expand-Archive infracost.zip -DestinationPath infracost
         #       $env:PATH += ";$(pwd)\infracost"
         #       infracost --version
-        - task: TerraformTask@5
-          displayName: Terraform init
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc'
-            backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg1234'
-            backendAzureRmContainerName: 'statefiles'
-            backendAzureRmKey: 'dev.tfstate'
+        # - task: TerraformTask@5
+        #   displayName: Terraform init
+        #   inputs:
+        #     provider: 'azurerm'
+        #     command: 'init'
+        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+        #     backendServiceArm: 'infra-sc'
+        #     backendAzureRmResourceGroupName: 'dkc-state-rg'
+        #     backendAzureRmStorageAccountName: 'dkcstatestg1234'
+        #     backendAzureRmContainerName: 'statefiles'
+        #     backendAzureRmKey: 'dev.tfstate'
         - task: PowerShell@2
           displayName: Infra Cost
           inputs:
