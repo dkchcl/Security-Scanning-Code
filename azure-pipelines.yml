@@ -62,14 +62,17 @@ stages:
     displayName: Security Scanning
     dependsOn: PreCommit
     jobs:
-    - job: SecurityScan
-      displayName: Terraform Security Scanning
+    - job: TFSec
+      displayName: TFSec
       steps:
       - task: tfsec@1
         displayName: TFSec
         inputs:
           version: 'v1.26.0'
           dir: '$(System.DefaultWorkingDirectory)'
+    - job: TFLint
+      displayName: TFLint
+      steps:      
       - task: PowerShell@2
         displayName: TFLint
         inputs:
@@ -78,17 +81,15 @@ stages:
             tflint --init
             tflint
           workingDirectory: '$(System.DefaultWorkingDirectory)'
-      # - task: PowerShell@2
-      #   displayName: Trivy
-      #   inputs:
-      #     targetType: 'inline'
-      #     script: 'trivy fs .'
-      #     workingDirectory: '$(System.DefaultWorkingDirectory)'
-      - task: trivy@2
+    - job: Trivy
+      displayName: Trivy
+      steps:    
+      - task: PowerShell@2
+        displayName: Trivy
         inputs:
-          version: 'latest'
-          type: 'repository'
-          target: '$(System.DefaultWorkingDirectory)'
+          targetType: 'inline'
+          script: 'trivy fs .'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
     
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
