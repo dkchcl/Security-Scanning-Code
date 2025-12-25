@@ -159,11 +159,24 @@ stages:
             artifact: 'tfplan'
             path: '$(Pipeline.Workspace)/tfplan' 
         - task: PowerShell@2
+          displayName: DEBUG - List downloaded files
+          inputs:
+            targetType: 'inline'
+            script: |
+              Write-Host "Pipeline.Workspace:"
+              Write-Host "$(Pipeline.Workspace)"
+              dir "$(Pipeline.Workspace)"
+              dir "$(Pipeline.Workspace)/tfplan" -Recurse
+    
+        - task: PowerShell@2
           displayName: Infra Cost
           inputs:
             targetType: 'inline'
             script: |
-              infracost breakdown --path=tfplan.json --format table
+              infracost breakdown `
+                --path=tfplan.json `
+                --terraform-plan-flags="-input=false" `
+                --format table
             workingDirectory: '$(Pipeline.Workspace)/tfplan'
           env:
             INFRACOST_API_KEY: $(INFRACOST_API_KEY)  
