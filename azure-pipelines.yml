@@ -97,6 +97,20 @@ stages:
       - job: InfraCost
         displayName: Infra Cost
         steps:
+        # # Install Infracost
+        # - task: PowerShell@2
+        #   displayName: Install Infracost (Windows)
+        #   inputs:
+        #     targetType: 'inline'
+        #     script: |
+        #       $ProgressPreference = 'SilentlyContinue'
+        #       Invoke-WebRequest `
+        #         -Uri "https://infracost.io/downloads/latest/infracost-windows-amd64.zip" `
+        #         -OutFile "infracost.zip"
+
+        #       Expand-Archive infracost.zip -DestinationPath infracost
+        #       $env:PATH += ";$(pwd)\infracost"
+        #       infracost --version
         - task: TerraformTask@5
           displayName: Terraform init
           inputs:
@@ -112,51 +126,8 @@ stages:
           displayName: Infra Cost
           inputs:
             targetType: 'inline'
-            script: 'infracost breakdown --path=.'
+            script: 'infracost breakdown --path=. --format table'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-  # - stage: InfraCostStage
-  #   displayName: Infra Cost & Impact Assessment Stage
-  #   dependsOn: SecurityScan
-  #   jobs:
-  #     - job: InfraCost
-  #       displayName: Infra Cost
-  #       steps:
-  #       # Install Infracost
-  #       - task: PowerShell@2
-  #         displayName: Install Infracost (Windows)
-  #         inputs:
-  #           targetType: 'inline'
-  #           script: |
-  #             $ProgressPreference = 'SilentlyContinue'
-  #             Invoke-WebRequest `
-  #               -Uri "https://infracost.io/downloads/latest/infracost-windows-amd64.zip" `
-  #               -OutFile "infracost.zip"
-
-  #             Expand-Archive infracost.zip -DestinationPath infracost
-  #             $env:PATH += ";$(pwd)\infracost"
-  #             infracost --version
-
-  #       # Terraform init
-  #       - task: TerraformTask@5
-  #         displayName: Terraform init
-  #         inputs:
-  #           provider: 'azurerm'
-  #           command: 'init'
-  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-  #           backendServiceArm: 'infra-sc'
-  #           backendAzureRmResourceGroupName: 'dkc-state-rg'
-  #           backendAzureRmStorageAccountName: 'dkcstatestg1234'
-  #           backendAzureRmContainerName: 'statefiles'
-  #           backendAzureRmKey: 'dev.tfstate'
-
-  #     # Infracost breakdown
-  #       - task: PowerShell@2
-  #         displayName: Infra Cost Breakdown
-  #         inputs:
-  #           targetType: 'inline'
-  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-  #           script: |
-  #             infracost breakdown --path=. --format table
 
   - stage: PlanStage
     displayName: Plan & Review Stage
