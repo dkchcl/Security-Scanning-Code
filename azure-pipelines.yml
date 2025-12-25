@@ -1,9 +1,7 @@
-trigger: none
-  # - main
+trigger: 
+  - main
 
 pool: Agent_01_Dec2025
-# variables:
-# - name: New variable group 24-Dec
 
 stages:
   - stage: PreCommit
@@ -59,7 +57,7 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             
   - stage: SecurityScan
-    displayName: Security Scanning
+    displayName: Security Scanning Stage
     dependsOn: PreCommit
     jobs:
     - job: TFSec
@@ -96,7 +94,7 @@ stages:
     dependsOn: SecurityScan
     jobs:
       - job: InfraCost
-        displayName: Infra Cost
+        displayName: Infra Cost Stage
         steps:
         # # Install Infracost
         # - task: PowerShell@2
