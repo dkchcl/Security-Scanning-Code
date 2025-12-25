@@ -116,21 +116,7 @@ stages:
             provider: 'azurerm'
             command: 'plan'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            commandOptions: '-out=tfplan'
             environmentServiceNameAzureRM: 'infra-sc'
-        - task: PowerShell@2
-          displayName: Terraform Show JSON
-          inputs:
-            targetType: 'inline'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            script: |
-              terraform show -json tfplan > tfplan.json
-
-        - task: PublishPipelineArtifact@1
-          displayName: Publish Terraform Plan JSON
-          inputs:
-            targetPath: '$(System.DefaultWorkingDirectory)/Enviroments/Dev/tfplan.json'
-            artifact: 'tfplan'    
     
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
@@ -153,28 +139,13 @@ stages:
         #       Expand-Archive infracost.zip -DestinationPath infracost
         #       $env:PATH += ";$(pwd)\infracost"
         #       infracost --version
-        - task: DownloadPipelineArtifact@2
-          displayName: Download Terraform Plan
-          inputs:
-            artifact: 'tfplan'
-            path: '$(Pipeline.Workspace)/tfplan' 
-        - task: PowerShell@2
-          displayName: DEBUG - List downloaded files
-          inputs:
-            targetType: 'inline'
-            script: |
-              Write-Host "Pipeline.Workspace:"
-              Write-Host "$(Pipeline.Workspace)"
-              dir "$(Pipeline.Workspace)"
-              dir "$(Pipeline.Workspace)/tfplan" -Recurse
     
         - task: PowerShell@2
           displayName: Infra Cost
           inputs:
             targetType: 'inline'
-            workingDirectory: '$(Pipeline.Workspace)/tfplan'
-            script: |
-              infracost diff --path=tfplan.json --format table
+            script: 'infracost breakdown --path=. --format table'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
           env:
             INFRACOST_API_KEY: $(INFRACOST_API_KEY)  
 
