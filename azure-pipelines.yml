@@ -2,6 +2,8 @@ trigger:
   - main
 
 pool: Agent_01_Dec2025
+variables:
+- name: INFRACOST_API_KEY
 
 stages:
   - stage: PreCommit
@@ -137,23 +139,14 @@ stages:
         #       Expand-Archive infracost.zip -DestinationPath infracost
         #       $env:PATH += ";$(pwd)\infracost"
         #       infracost --version
-        - task: TerraformTask@5
-          displayName: Terraform init
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc'
-            backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg1234'
-            backendAzureRmContainerName: 'statefiles'
-            backendAzureRmKey: 'dev.tfstate'
 
         - task: PowerShell@2
           displayName: Infra Cost
           inputs:
             targetType: 'inline'
             script: 'infracost breakdown --path=$(System.DefaultWorkingDirectory)/Enviroments/Dev --format table'
+          env:
+            INFRACOST_API_KEY: $(INFRACOST_API_KEY)  
 
   - stage: ApprovalStage
     displayName: Approval & Governance Stage
