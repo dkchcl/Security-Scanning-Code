@@ -112,11 +112,18 @@ stages:
         steps:
         # Install Infracost
         - task: PowerShell@2
-          displayName: Install Infracost
+          displayName: Install Infracost (Windows)
           inputs:
             targetType: 'inline'
             script: |
-              curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.ps1 | powershell -Command -
+              $ProgressPreference = 'SilentlyContinue'
+              Invoke-WebRequest `
+                -Uri "https://infracost.io/downloads/latest/infracost-windows-amd64.zip" `
+                -OutFile "infracost.zip"
+
+              Expand-Archive infracost.zip -DestinationPath infracost
+              $env:PATH += ";$(pwd)\infracost"
+              infracost --version
 
         # Terraform init
         - task: TerraformTask@5
