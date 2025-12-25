@@ -146,7 +146,7 @@ stages:
             targetType: 'inline'
             script: |
               infracost breakdown --path=. --format table
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Environments/Dev'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
           env:
             INFRACOST_API_KEY: $(INFRACOST_API_KEY)  
 
