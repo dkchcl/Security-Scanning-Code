@@ -163,8 +163,8 @@ stages:
           inputs:
             targetType: 'inline'
             script: |
-              infracost breakdown --path=tfplan --format table
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+              infracost breakdown --path=tfplan.json --format table
+            workingDirectory: '$(Pipeline.Workspace)/tfplan'
           env:
             INFRACOST_API_KEY: $(INFRACOST_API_KEY)  
 
