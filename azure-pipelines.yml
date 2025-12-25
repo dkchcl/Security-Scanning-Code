@@ -142,7 +142,7 @@ stages:
           displayName: Infra Cost
           inputs:
             targetType: 'inline'
-            script: 'infracost breakdown --path=. --format table'
+            script: 'infracost breakdown --format table'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
 
   - stage: ApprovalStage
