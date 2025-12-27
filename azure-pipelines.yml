@@ -64,36 +64,40 @@ stages:
     displayName: Security Scanning Stage
     # dependsOn: PreCommit
     jobs:
-    # - job: TFSec
-    #   displayName: TFSec
-    #   steps:
-    #   - task: tfsec@1
-    #     displayName: TFSec
-    #     inputs:
-    #       version: 'v1.26.0'
-    #       dir: '$(System.DefaultWorkingDirectory)'
-    # - job: TFLint
-    #   displayName: TFLint
-    #   steps:      
-    #   - task: PowerShell@2
-    #     displayName: TFLint
-    #     inputs:
-    #       targetType: 'inline'
-    #       script: |
-    #         tflint --init
-    #         tflint
-    #       workingDirectory: '$(System.DefaultWorkingDirectory)'
-    # - job: Trivy
-    #   displayName: Trivy
-    #   steps:    
-    #   - task: PowerShell@2
-    #     displayName: Trivy
-    #     inputs:
-    #       targetType: 'inline'
-    #       script: 'trivy fs .'
-    #       workingDirectory: '$(System.DefaultWorkingDirectory)'
+    - job: TFSec
+      displayName: TFSec
+      steps:
+      - task: tfsec@1
+        displayName: TFSec
+        inputs:
+          version: 'v1.26.0'
+          dir: '$(System.DefaultWorkingDirectory)'
+    - job: TFLint
+      displayName: TFLint
+      dependsOn: TFSec
+      steps:      
+      - task: PowerShell@2
+        displayName: TFLint
+        inputs:
+          targetType: 'inline'
+          script: |
+            tflint --init
+            tflint
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+    - job: Trivy
+      displayName: Trivy
+      dependsOn: TFLint
+      steps:    
+      - task: PowerShell@2
+        displayName: Trivy
+        inputs:
+          targetType: 'inline'
+          script: 'trivy fs .'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
     - job: TerraScan
       displayName: Terra Scan
+      dependsOn: Trivy
+      continueOnError: true
       steps:      
       - task: PowerShell@2
         displayName: TerraScan
@@ -101,10 +105,21 @@ stages:
           targetType: 'inline'
           script: 'terrascan scan -i terraform -d .'
           workingDirectory: '$(System.DefaultWorkingDirectory)'
+    - job: Checkov
+      displayName: Checkov
+      dependsOn: TerraScan
+      continueOnError: true
+      steps:
+      - task: PowerShell@2
+        displayName: Checkov
+        inputs:
+          targetType: 'inline'
+          script: 'checkov -d .'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
     
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
-    dependsOn: PlanStage
+    dependsOn: SecurityScan
     jobs:
       - job: InfraCost
         displayName: Infra Cost Stage
@@ -145,7 +160,7 @@ stages:
 
   - stage: PlanStage
     displayName: Plan & Review Stage
-    dependsOn: SecurityScan
+    dependsOn: InfraCostStage
     jobs:
       - job: TerraformPlan
         displayName: Terraform Plan
@@ -171,7 +186,7 @@ stages:
     
   - stage: ApprovalStage
     displayName: Approval & Governance Stage
-    dependsOn: InfraCostStage
+    dependsOn: PlanStage
     pool: server
     jobs:
       - job: MannualApproval
