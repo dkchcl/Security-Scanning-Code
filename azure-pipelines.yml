@@ -1,5 +1,5 @@
 trigger: 
-  - main
+  # - main
 
 pool: Agent_01_Dec2025
 variables:
@@ -91,33 +91,6 @@ stages:
           script: 'trivy fs .'
           workingDirectory: '$(System.DefaultWorkingDirectory)'
     
-
-  - stage: PlanStage
-    displayName: Plan & Review Stage
-    dependsOn: SecurityScan
-    jobs:
-      - job: TerraformPlan
-        displayName: Terraform Plan
-        steps:
-        - task: TerraformTask@5
-          displayName: Terraform init
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc'
-            backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg1234'
-            backendAzureRmContainerName: 'statefiles'
-            backendAzureRmKey: 'dev.tfstate'
-        - task: TerraformTask@5
-          displayName: Terraform Plan
-          inputs:
-            provider: 'azurerm'
-            command: 'plan'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            environmentServiceNameAzureRM: 'infra-sc'
-    
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
     dependsOn: PlanStage
@@ -158,6 +131,34 @@ stages:
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
           env:
             INFRACOST_API_KEY: $(INFRACOST_API_KEY)  
+
+  - stage: PlanStage
+    displayName: Plan & Review Stage
+    dependsOn: SecurityScan
+    jobs:
+      - job: TerraformPlan
+        displayName: Terraform Plan
+        steps:
+        - task: TerraformTask@5
+          displayName: Terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            backendServiceArm: 'infra-sc'
+            backendAzureRmResourceGroupName: 'dkc-state-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg1234'
+            backendAzureRmContainerName: 'statefiles'
+            backendAzureRmKey: 'dev.tfstate'
+        - task: TerraformTask@5
+          displayName: Terraform Plan
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+            environmentServiceNameAzureRM: 'infra-sc'
+    
+
 
   - stage: ApprovalStage
     displayName: Approval & Governance Stage
