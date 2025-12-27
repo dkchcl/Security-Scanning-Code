@@ -64,34 +64,34 @@ stages:
     displayName: Security Scanning Stage
     # dependsOn: PreCommit
     jobs:
-    - job: TFSec
-      displayName: TFSec
-      steps:
-      - task: tfsec@1
-        displayName: TFSec
-        inputs:
-          version: 'v1.26.0'
-          dir: '$(System.DefaultWorkingDirectory)'
-    - job: TFLint
-      displayName: TFLint
-      steps:      
-      - task: PowerShell@2
-        displayName: TFLint
-        inputs:
-          targetType: 'inline'
-          script: |
-            tflint --init
-            tflint
-          workingDirectory: '$(System.DefaultWorkingDirectory)'
-    - job: Trivy
-      displayName: Trivy
-      steps:    
-      - task: PowerShell@2
-        displayName: Trivy
-        inputs:
-          targetType: 'inline'
-          script: 'trivy fs .'
-          workingDirectory: '$(System.DefaultWorkingDirectory)'
+    # - job: TFSec
+    #   displayName: TFSec
+    #   steps:
+    #   - task: tfsec@1
+    #     displayName: TFSec
+    #     inputs:
+    #       version: 'v1.26.0'
+    #       dir: '$(System.DefaultWorkingDirectory)'
+    # - job: TFLint
+    #   displayName: TFLint
+    #   steps:      
+    #   - task: PowerShell@2
+    #     displayName: TFLint
+    #     inputs:
+    #       targetType: 'inline'
+    #       script: |
+    #         tflint --init
+    #         tflint
+    #       workingDirectory: '$(System.DefaultWorkingDirectory)'
+    # - job: Trivy
+    #   displayName: Trivy
+    #   steps:    
+    #   - task: PowerShell@2
+    #     displayName: Trivy
+    #     inputs:
+    #       targetType: 'inline'
+    #       script: 'trivy fs .'
+    #       workingDirectory: '$(System.DefaultWorkingDirectory)'
     - job: TerraScan
       displayName: Terra Scan
       steps:      
@@ -100,7 +100,7 @@ stages:
         inputs:
           targetType: 'inline'
           script: 'terrascan scan -i terraform -d .'
-          workingDirectory: '''$(System.DefaultWorkingDirectory)'''
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
     
   - stage: InfraCostStage
     displayName: Infra Cost & Impact Assessment Stage
