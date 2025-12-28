@@ -125,20 +125,20 @@ stages:
       - job: InfraCost
         displayName: Infra Cost Stage
         steps:
-        # # Install Infracost
-        # - task: PowerShell@2
-        #   displayName: Install Infracost (Windows)
-        #   inputs:
-        #     targetType: 'inline'
-        #     script: |
-        #       $ProgressPreference = 'SilentlyContinue'
-        #       Invoke-WebRequest `
-        #         -Uri "https://infracost.io/downloads/latest/infracost-windows-amd64.zip" `
-        #         -OutFile "infracost.zip"
+        # Install Infracost
+        - task: PowerShell@2
+          displayName: Install Infracost (Windows)
+          inputs:
+            targetType: 'inline'
+            script: |
+              $ProgressPreference = 'SilentlyContinue'
+              Invoke-WebRequest `
+                -Uri "https://infracost.io/downloads/latest/infracost-windows-amd64.zip" `
+                -OutFile "infracost.zip"
 
-        #       Expand-Archive infracost.zip -DestinationPath infracost
-        #       $env:PATH += ";$(pwd)\infracost"
-        #       infracost --version
+              Expand-Archive infracost.zip -DestinationPath infracost
+              $env:PATH += ";$(pwd)\infracost"
+              infracost --version
         - task: TerraformTask@5
           displayName: Terraform init
           inputs:
