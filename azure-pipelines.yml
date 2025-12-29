@@ -2,7 +2,7 @@ name: Infra Deploy With Security Scan
 
 trigger: 
   - main
-
+ 
 pool: Agent_01_Dec2025
 variables:
 - group: INFRACOST_API_KEY
