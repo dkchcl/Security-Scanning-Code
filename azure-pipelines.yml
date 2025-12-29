@@ -76,7 +76,7 @@ stages:
         displayName: TFSec
         inputs:
           targetType: 'inline'
-          script: 'tfsec .'
+          script: 'tfsec'
           workingDirectory: '$(System.DefaultWorkingDirectory)'
     - job: TFLint
       displayName: TFLint
