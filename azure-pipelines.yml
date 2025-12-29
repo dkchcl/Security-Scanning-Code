@@ -8,70 +8,76 @@ variables:
 - group: INFRACOST_API_KEY
 
 stages:
-  - stage: PreCommit
-    displayName: Pre-Commit / Static Analysis Stage
-    jobs:
-      - job: Terraform_install_init
-        displayName: Terraform install & init
-        steps:
-          - task: TerraformInstaller@1
-            displayName: Terraform install
-            inputs:
-              terraformVersion: 'latest'
-          - task: TerraformTask@5
-            displayName: Terraform init
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-              backendServiceArm: 'infra-sc'
-              backendAzureRmResourceGroupName: 'dkc-state-rg'
-              backendAzureRmStorageAccountName: 'dkcstatestg1234'
-              backendAzureRmContainerName: 'statefiles'
-              backendAzureRmKey: 'dev.tfstate'
+  # - stage: PreCommit
+  #   displayName: Pre-Commit / Static Analysis Stage
+  #   jobs:
+  #     - job: Terraform_install_init
+  #       displayName: Terraform install & init
+  #       steps:
+  #         - task: TerraformInstaller@1
+  #           displayName: Terraform install
+  #           inputs:
+  #             terraformVersion: 'latest'
+  #         - task: TerraformTask@5
+  #           displayName: Terraform init
+  #           inputs:
+  #             provider: 'azurerm'
+  #             command: 'init'
+  #             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+  #             backendServiceArm: 'infra-sc'
+  #             backendAzureRmResourceGroupName: 'dkc-state-rg'
+  #             backendAzureRmStorageAccountName: 'dkcstatestg1234'
+  #             backendAzureRmContainerName: 'statefiles'
+  #             backendAzureRmKey: 'dev.tfstate'
 
-      - job: Terraform_fmt_Validate
-        displayName: Terraform fmt & Validate
-        dependsOn: Terraform_install_init
-        steps:
-        - task: TerraformTask@5
-          displayName: Terraform init
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc'
-            backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg1234'
-            backendAzureRmContainerName: 'statefiles'
-            backendAzureRmKey: 'dev.tfstate'
-        - task: TerraformTask@5
-          displayName: Terraform Fmt
-          inputs:
-            provider: 'azurerm'
-            command: 'custom'
-            commandOptions: 'fmt -recursive'
-            outputTo: 'console'
-            environmentServiceNameAzureRM: 'infra-sc'
-        - task: TerraformTask@5
-          displayName: Terraform Validate
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+  #     - job: Terraform_fmt_Validate
+  #       displayName: Terraform fmt & Validate
+  #       dependsOn: Terraform_install_init
+  #       steps:
+  #       - task: TerraformTask@5
+  #         displayName: Terraform init
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'init'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
+  #           backendServiceArm: 'infra-sc'
+  #           backendAzureRmResourceGroupName: 'dkc-state-rg'
+  #           backendAzureRmStorageAccountName: 'dkcstatestg1234'
+  #           backendAzureRmContainerName: 'statefiles'
+  #           backendAzureRmKey: 'dev.tfstate'
+  #       - task: TerraformTask@5
+  #         displayName: Terraform Fmt
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'custom'
+  #           commandOptions: 'fmt -recursive'
+  #           outputTo: 'console'
+  #           environmentServiceNameAzureRM: 'infra-sc'
+  #       - task: TerraformTask@5
+  #         displayName: Terraform Validate
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'validate'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
             
   - stage: SecurityScan
     displayName: Security Scanning Stage
-    dependsOn: PreCommit
+    # dependsOn: PreCommit
     jobs:
     - job: TFSec
       displayName: TFSec
       steps:
-      - task: tfsec@1
+      # - task: tfsec@1
+      #   displayName: TFSec
+      #   inputs:
+      #     version: 'v1.26.0'
+      #     dir: '$(System.DefaultWorkingDirectory)'
+      - task: PowerShell@2
         displayName: TFSec
         inputs:
-          version: 'v1.26.0'
-          dir: '$(System.DefaultWorkingDirectory)'
+          targetType: 'inline'
+          script: 'tfsec .'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
     - job: TFLint
       displayName: TFLint
       dependsOn: TFSec
