@@ -24,10 +24,10 @@ stages:
               provider: 'azurerm'
               command: 'init'
               workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-              backendServiceArm: 'infra-sc'
-              backendAzureRmResourceGroupName: 'dkc-state-rg'
-              backendAzureRmStorageAccountName: 'dkcstatestg1234'
-              backendAzureRmContainerName: 'statefiles'
+              backendServiceArm: 'infra-sc1'
+              backendAzureRmResourceGroupName: 'dkcstate-rg'
+              backendAzureRmStorageAccountName: 'dkcstatestg01'
+              backendAzureRmContainerName: 'statefile'
               backendAzureRmKey: 'dev.tfstate'
 
       - job: Terraform_fmt_Validate
@@ -40,10 +40,10 @@ stages:
             provider: 'azurerm'
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc'
-            backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg1234'
-            backendAzureRmContainerName: 'statefiles'
+            backendServiceArm: 'infra-sc1'
+            backendAzureRmResourceGroupName: 'dkcstate-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg01'
+            backendAzureRmContainerName: 'statefile'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
           displayName: Terraform Fmt
@@ -52,7 +52,7 @@ stages:
             command: 'custom'
             commandOptions: 'fmt -recursive'
             outputTo: 'console'
-            environmentServiceNameAzureRM: 'infra-sc'
+            environmentServiceNameAzureRM: 'infra-sc1'
         - task: TerraformTask@5
           displayName: Terraform Validate
           inputs:
@@ -146,10 +146,10 @@ stages:
             provider: 'azurerm'
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc'
-            backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg1234'
-            backendAzureRmContainerName: 'statefiles'
+            backendServiceArm: 'infra-sc1'
+            backendAzureRmResourceGroupName: 'dkcstate-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg01'
+            backendAzureRmContainerName: 'statefile'
             backendAzureRmKey: 'dev.tfstate'
         - task: PowerShell@2
           displayName: Infra Cost
@@ -173,10 +173,10 @@ stages:
             provider: 'azurerm'
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc'
-            backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg1234'
-            backendAzureRmContainerName: 'statefiles'
+            backendServiceArm: 'infra-sc1'
+            backendAzureRmResourceGroupName: 'dkcstate-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg01'
+            backendAzureRmContainerName: 'statefile'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
           displayName: Terraform Plan
@@ -184,7 +184,7 @@ stages:
             provider: 'azurerm'
             command: 'plan'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            environmentServiceNameAzureRM: 'infra-sc'
+            environmentServiceNameAzureRM: 'infra-sc1'
     
   - stage: ApprovalStage
     displayName: Approval & Governance Stage
@@ -213,10 +213,10 @@ stages:
             provider: 'azurerm'
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            backendServiceArm: 'infra-sc'
-            backendAzureRmResourceGroupName: 'dkc-state-rg'
-            backendAzureRmStorageAccountName: 'dkcstatestg1234'
-            backendAzureRmContainerName: 'statefiles'
+            backendServiceArm: 'infra-sc1'
+            backendAzureRmResourceGroupName: 'dkcstate-rg'
+            backendAzureRmStorageAccountName: 'dkcstatestg01'
+            backendAzureRmContainerName: 'statefile'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
           displayName: Terraform Apply
@@ -224,7 +224,7 @@ stages:
             provider: 'azurerm'
             command: 'apply'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroments/Dev'
-            environmentServiceNameAzureRM: 'infra-sc'
+            environmentServiceNameAzureRM: 'infra-sc1'
 
 
 
