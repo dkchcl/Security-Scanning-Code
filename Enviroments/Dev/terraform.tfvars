@@ -204,7 +204,7 @@ bastion_hosts = {
 
 key_vaults = {
   kv1 = {
-    key_vault_name              = "devnewkv02"
+    key_vault_name              = "devnewkv03"
     location                    = "central india"
     resource_group_name         = "dev_rg_01"
     enabled_for_disk_encryption = true
@@ -224,28 +224,28 @@ key_vault_secrets = {
   vm_users = {
     secret_name         = "vm-username"
     secret_value        = "adminuser"
-    key_vault_name      = "devnewkv02"
+    key_vault_name      = "devnewkv03"
     resource_group_name = "dev_rg_01"
   }
 
   vm_pass = {
     secret_name         = "vm-password"
     secret_value        = "Bbpl@#123456"
-    key_vault_name      = "devnewkv02"
+    key_vault_name      = "devnewkv03"
     resource_group_name = "dev_rg_01"
   }
 
   sql_user = {
     secret_name         = "db-username"
     secret_value        = "dbuser"
-    key_vault_name      = "devnewkv02"
+    key_vault_name      = "devnewkv03"
     resource_group_name = "dev_rg_01"
   }
 
   sql_pass = {
     secret_name         = "db-password"
     secret_value        = "Bbpl@#123456"
-    key_vault_name      = "devnewkv02"
+    key_vault_name      = "devnewkv03"
     resource_group_name = "dev_rg_01"
   }
 
@@ -260,7 +260,7 @@ vms = {
     resource_group_name             = "dev_rg_01"
     size                            = "Standard_D2s_v3"
     nic_name                        = "dev-nic-01"
-    key_vault_name                  = "devnewkv02"
+    key_vault_name                  = "devnewkv03"
     secret_name                     = "vm-username"
     secret_password                 = "vm-password"
     disable_password_authentication = false
@@ -284,7 +284,7 @@ vms = {
     resource_group_name             = "dev_rg_01"
     size                            = "Standard_D2s_v3"
     nic_name                        = "dev-nic-02"
-    key_vault_name                  = "devnewkv02"
+    key_vault_name                  = "devnewkv03"
     secret_name                     = "vm-username"
     secret_password                 = "vm-password"
     disable_password_authentication = false
@@ -322,7 +322,7 @@ sql_servers = {
     version                       = "12.0"
     secret_name                   = "db-username"
     secret_password               = "db-password"
-    key_vault_name                = "devnewkv02"
+    key_vault_name                = "devnewkv03"
     connection_policy             = "Default"
     minimum_tls_version           = "1.2"
     public_network_access_enabled = true
