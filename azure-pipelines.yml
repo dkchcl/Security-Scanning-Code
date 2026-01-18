@@ -27,7 +27,7 @@ stages:
               backendServiceArm: 'infra-sc1'
               backendAzureRmResourceGroupName: 'dkcstate-rg'
               backendAzureRmStorageAccountName: 'dkcstatestg01'
-              backendAzureRmContainerName: 'statefile'
+              backendAzureRmContainerName: 'statefiles'
               backendAzureRmKey: 'dev.tfstate'
 
       - job: Terraform_fmt_Validate
@@ -43,7 +43,7 @@ stages:
             backendServiceArm: 'infra-sc1'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
             backendAzureRmStorageAccountName: 'dkcstatestg01'
-            backendAzureRmContainerName: 'statefile'
+            backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
           displayName: Terraform Fmt
@@ -149,7 +149,7 @@ stages:
             backendServiceArm: 'infra-sc1'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
             backendAzureRmStorageAccountName: 'dkcstatestg01'
-            backendAzureRmContainerName: 'statefile'
+            backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: PowerShell@2
           displayName: Infra Cost
@@ -176,7 +176,7 @@ stages:
             backendServiceArm: 'infra-sc1'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
             backendAzureRmStorageAccountName: 'dkcstatestg01'
-            backendAzureRmContainerName: 'statefile'
+            backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
           displayName: Terraform Plan
@@ -216,7 +216,7 @@ stages:
             backendServiceArm: 'infra-sc1'
             backendAzureRmResourceGroupName: 'dkcstate-rg'
             backendAzureRmStorageAccountName: 'dkcstatestg01'
-            backendAzureRmContainerName: 'statefile'
+            backendAzureRmContainerName: 'statefiles'
             backendAzureRmKey: 'dev.tfstate'
         - task: TerraformTask@5
           displayName: Terraform Apply
